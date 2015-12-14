@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import org.infinispan.client.hotrod.RemoteCache;
 import org.jboss.infinispan.demo.model.Task;
 
 
@@ -16,8 +18,8 @@ public class TaskService {
 	
 	static Logger log = Logger.getLogger(TaskService.class.getName());
 	
-//	@Inject
-//	RemoteCache<Long, Task> cache;
+	@Inject @MyCache
+	RemoteCache<Long, Task> cache;
 	
 	static List<Task> tasks = new ArrayList<Task>();
 	
@@ -37,8 +39,7 @@ public class TaskService {
 	 * DONE: Run a bulk get operation against the remote cache and retrieve all values 
 	 */
 	public Collection<Task> findAll() {
-		return tasks;
-		//		return cache.getBulk().values();
+		return cache.getBulk().values();
 	}
 	
 	/**
@@ -56,7 +57,7 @@ public class TaskService {
 			task.setCreatedOn(new Date());
 		}
 		task.setId(System.nanoTime());
-//		cache.putIfAbsent(task.getId(), task);
+		cache.putIfAbsent(task.getId(), task);
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class TaskService {
 	 */	
 	public void update(Task task) {
 		
-//		cache.replace(task.getId(), task);
+		cache.replace(task.getId(), task);
 			
 	}
 	
@@ -78,7 +79,7 @@ public class TaskService {
 	 * @see TaskService.delete(Long)
 	 */
 	public void delete(Task task) {
-//		this.delete(task.getId());
+		this.delete(task.getId());
 	}
 	
 	/**
@@ -90,7 +91,7 @@ public class TaskService {
 	 * 
 	 */
 	public void delete(Long id) {
-//		cache.remove(id);
+		cache.remove(id);
 	}
 	
 	
