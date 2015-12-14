@@ -10,9 +10,9 @@ public class Task implements Serializable {
 	
 	private Long id;
 	
-	private int version;
-	
 	private String title;
+	
+	private String user;
 	
 	private boolean done;
 
@@ -26,14 +26,6 @@ public class Task implements Serializable {
 
 	public void setId(final Long id) {
 		this.id = id;
-	}
-
-	public int getVersion() {
-		return this.version;
-	}
-
-	public void setVersion(final int version) {
-		this.version = version;
 	}
 
 	@Override
@@ -67,6 +59,14 @@ public class Task implements Serializable {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 	public boolean isDone() {

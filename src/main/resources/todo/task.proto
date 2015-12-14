@@ -1,0 +1,21 @@
+package todo;
+
+/* @Indexed */
+message Task {
+
+	/* @IndexedField(index=false, store=false) */
+	required int64 id = 1;
+	
+	/* @IndexedField */
+   	required string title = 2;
+   
+   	/* @IndexedField */
+   	required string user = 3;
+   	
+   	required bool done = 4;
+   
+	required int64 createdOn = 5;
+	
+	optional int64 completedOn = 6;
+	
+}

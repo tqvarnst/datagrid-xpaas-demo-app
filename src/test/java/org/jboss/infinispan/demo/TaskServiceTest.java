@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
+import org.jboss.infinispan.demo.marshallers.TaskMarshaller;
 import org.jboss.infinispan.demo.model.Task;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -47,8 +48,11 @@ public class TaskServiceTest {
 				.addClass(Config.class)
 				.addClass(Task.class)
 				.addClass(TaskService.class)
+				.addClass(CurrentUser.class)
 				.addClass(MyCache.class)
+				.addClass(TaskMarshaller.class)
 				.addAsLibraries(jars)
+				.addAsResource("todo/task.proto")
 				.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 	}
 

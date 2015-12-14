@@ -1,6 +1,5 @@
 package org.jboss.infinispan.demo;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -10,89 +9,109 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.infinispan.client.hotrod.RemoteCache;
+import org.infinispan.client.hotrod.Search;
+import org.infinispan.query.dsl.Query;
+import org.infinispan.query.dsl.QueryFactory;
 import org.jboss.infinispan.demo.model.Task;
 
-
-@Stateless 
+@Stateless
 public class TaskService {
-	
+
 	static Logger log = Logger.getLogger(TaskService.class.getName());
-	
-	@Inject @MyCache
+
+	@Inject
+	@MyCache
 	RemoteCache<Long, Task> cache;
-	
-	static List<Task> tasks = new ArrayList<Task>();
-	
-	static {
-		Task t1 = new Task();
-		t1.setId(0L);
-		t1.setTitle("Example task 1");
-		t1.setCreatedOn(new Date());
-		t1.setDone(false);
-		tasks.add(t1);
-	}
+
+	@Inject
+	@CurrentUser
+	String user;
 
 	/**
 	 * This methods should return all cache entries
+	 * 
 	 * @return
 	 * 
-	 * DONE: Run a bulk get operation against the remote cache and retrieve all values 
+	 * 		DONE: Run a bulk get operation against the remote cache and
+	 *         retrieve all values
 	 */
 	public Collection<Task> findAll() {
-		return cache.getBulk().values();
+		// return cache.getBulk().values();
+
+		QueryFactory qf = Search.getQueryFactory(cache);
+		Query query = qf.from(Task.class).having("user").eq(user).toBuilder().build();
+		
+		List<Task> results = query.list();
+		return results;
 	}
-	
+
 	/**
-	 * This method should insert a new task object into the grid. You will have to create a unique id for the task.
+	 * This method should insert a new task object into the grid. You will have
+	 * to create a unique id for the task.
+	 * 
 	 * @param task
 	 * 
-	 * DONE: If the new task doesn't have a createdOn date (UI issue) we add the current date of now
-	 * DONE: Create a unique id by querying for the size of the cache (RemoteCache.size()) and increment by one.
-	 * DONE: Put the object into the grid via RemoteCache.putIfAbsent(Object key, Object value)
+	 *            DONE: If the new task doesn't have a createdOn date (UI issue)
+	 *            we add the current date of now DONE: Create a unique id by
+	 *            querying for the size of the cache (RemoteCache.size()) and
+	 *            increment by one. DONE: Put the object into the grid via
+	 *            RemoteCache.putIfAbsent(Object key, Object value)
 	 * 
-	 * NOTE: Using the Id field from the model as key is actually a rest from the JPA model, a better way would be to create a unique id baste on for example user, title and creation date)
+	 *            NOTE: Using the Id field from the model as key is actually a
+	 *            rest from the JPA model, a better way would be to create a
+	 *            unique id baste on for example user, title and creation date)
 	 */
 	public void insert(Task task) {
-		if(task.getCreatedOn()==null) {
+		if (task.getCreatedOn() == null) {
 			task.setCreatedOn(new Date());
 		}
 		task.setId(System.nanoTime());
+		task.setUser(user);
 		cache.putIfAbsent(task.getId(), task);
 	}
 
 	/**
-	 * This method should update an existing task. Please note that since this is REST application there are no notion of user transaction and the latest update even if it based on a earlier version will override intermediate versions. 
-	 * One way to solve this would be to store the hotrod version of the object in the actual object and use RemoteCache.replaceWithVersion(...) and handle a failed update in the UI, but for this application we are happy with overriding.
+	 * This method should update an existing task. Please note that since this
+	 * is REST application there are no notion of user transaction and the
+	 * latest update even if it based on a earlier version will override
+	 * intermediate versions. One way to solve this would be to store the hotrod
+	 * version of the object in the actual object and use
+	 * RemoteCache.replaceWithVersion(...) and handle a failed update in the UI,
+	 * but for this application we are happy with overriding.
+	 * 
 	 * @param task
 	 * 
-	 * DONE: Replace the implementation with RemoteCache.replace(Long, Task)
-	 */	
+	 *            DONE: Replace the implementation with
+	 *            RemoteCache.replace(Long, Task)
+	 */
 	public void update(Task task) {
-		
+		task.setUser(user);
 		cache.replace(task.getId(), task);
-			
+
 	}
-	
+
 	/**
 	 * This method deletes an object from the cache
+	 * 
 	 * @param task
 	 * @see TaskService.delete(Long)
 	 */
 	public void delete(Task task) {
 		this.delete(task.getId());
 	}
-	
+
 	/**
-	 * This method deletes an object from the cache
-	 * Since we now (or will sone) have a permanent store we need to implement a delete method for the tests to be able to delete any object they add
+	 * This method deletes an object from the cache Since we now (or will sone)
+	 * have a permanent store we need to implement a delete method for the tests
+	 * to be able to delete any object they add
+	 * 
 	 * @param id
 	 * 
-	 * DONE: Replace the implementation with RemoteCache.remove(Long)
+	 *            DONE: Replace the implementation with RemoteCache.remove(Long)
 	 * 
 	 */
 	public void delete(Long id) {
 		cache.remove(id);
 	}
-	
-	
+
 }
