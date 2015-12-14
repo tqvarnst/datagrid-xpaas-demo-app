@@ -108,6 +108,11 @@
 				<artifactId>infinispan-remote</artifactId>
 				<scope>compile</scope>
 		</dependency>
+		<dependency>
+		    <groupId>javax.cache</groupId>
+		    <artifactId>cache-api</artifactId>
+		    <scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
