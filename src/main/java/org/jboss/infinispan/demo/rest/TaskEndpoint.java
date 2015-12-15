@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -51,4 +52,35 @@ public class TaskEndpoint
 	  taskService.update(task);
       return Response.noContent().build();
    }
+   
+   @GET
+   @Path("/generate/{quantity:[1-9][0-9]*}")
+   @Produces("application/json")
+   public Collection<Task> generateEntities(@PathParam("quantity") Integer quantity) {
+	   int startValue=taskService.findAll().size()+1;
+	   for(int i=0;i<quantity;i++) {
+		   Task t = new Task();
+		   t.setTitle(String.format("Task %s", Integer.toString(i+startValue) ));
+		   taskService.insert(t);
+	   }
+	   return taskService.findAll();
+   }
+   
+   @GET
+   @Produces("application/json")
+   @Path("/filter/{value}")
+   public Collection<Task> filter(@PathParam("value") String value)
+   {
+	  return taskService.filter(value);
+   }
+   
+   @DELETE
+   @Path("/{id:[0-9][0-9]*}")
+   @Produces("application/json")
+   public Collection<Task> removeTask(@PathParam("id") Long id)
+   {
+	  taskService.delete(id);
+      return taskService.findAll(); 
+   }
+   
 }

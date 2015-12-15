@@ -1,6 +1,16 @@
-<h2>All Todos <a class="btn btn-primary pull-right" href="#/create"><i
-        class="icon-plus-sign icon-white"></i> New Task</a>       </h2>
+<h2>All Todos</h2>
 
+<div class="pull-left">
+	Filter: <input type="text" ng-change="filter()" ng-model="filter.value" class="form-control" style="width: 200px">
+</div>
+<div class="pull-right">
+	<a class="btn btn-default" href="#/create">
+ 		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Task
+	</a>
+	<button type="button" class="btn btn-default" ng-click="generateTasks()">
+ 		<span class="glyphicon glyphicon-fast-forward" aria-hidden="true"></span> Generate Tasks
+	</button>     
+</div>
 
 
 <table class="table table-hover">
@@ -15,6 +25,7 @@
             Completed On
         </th>
         <th>Done</th>
+        <th></th>
     </tr>
     <tr class="success-{{task.done}}" ng-repeat="task in tasks track by $index">
         <td> 
@@ -28,6 +39,9 @@
         </td>
         <td>
             <input type="checkbox" ng-change="taskStatusChanged(task)" ng-value="task.done" ng-model="task.done">
+        </td>
+        <td>
+        	<button type="button" class="btn btn-default btn-sm" ng-click="deleteTask(task)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
         </td>
     </tr>
 </table>

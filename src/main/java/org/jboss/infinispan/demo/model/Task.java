@@ -4,7 +4,7 @@ package org.jboss.infinispan.demo.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Task implements Serializable {
+public class Task implements Serializable, Comparable<Task> {
 
 	private static final long serialVersionUID = 2315323429163437300L;
 	
@@ -100,6 +100,12 @@ public class Task implements Serializable {
 			result += "title: " + title;
 		result += ", done: " + done;
 		return result;
+	}
+
+	@Override
+	public int compareTo(Task o) {
+		int dateCompare = o.getCreatedOn().compareTo(createdOn);
+		return dateCompare!=0 ? dateCompare : title.compareTo(o.getTitle());
 	}
 	
 	

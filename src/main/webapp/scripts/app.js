@@ -18,6 +18,7 @@ app.config(function ($routeProvider) {
 });
  
 app.controller('ListCtrl', function ($scope, $http) {
+	$scope.isFocusCreateInput = false;
     $http.get(document.location.pathname + 'rest/tasks').success(function (data) {
         $scope.tasks = data;
     }).error(function (data, status) {
@@ -37,14 +38,46 @@ app.controller('ListCtrl', function ($scope, $http) {
         });
     };
     
-
+    $scope.deleteTask = function (task) {
+        console.log("Delete task with id " + task.id);
+        $http.delete(document.location.pathname + 'rest/tasks/' + task.id).success(function (data) {
+        	$scope.tasks = data;
+        }).error(function (data, status) {
+            console.log('Error ' + data);
+        });
+    };
+    
+    $scope.generateTasks = function () {
+    	console.log('Generating tasks');
+    	$http.get(document.location.pathname + 'rest/tasks/generate/20').success(function (data) {
+            $scope.tasks = data;
+        }).error(function (data, status) {
+            console.log('Error ' + data);
+        });
+    };
+    $scope.filter = function() {
+    	var value = $scope.filter.value;
+    	if(value.length > 0) {
+	    	$http.get(document.location.pathname + 'rest/tasks/filter/' + $scope.filter.value).success(function (data) {
+	            $scope.tasks = data;
+	        }).error(function (data, status) {
+	            console.log('Error ' + data);
+	        });
+    	} else {
+    		$http.get('/mytodo/rest/tasks').success(function (data) {
+    	        $scope.tasks = data;
+    	    }).error(function (data, status) {
+    	        console.log('Error ' + data);
+    	    });
+    	}
+	};
 });
  
 app.controller('CreateCtrl', function ($scope, $http, $location) {
-    $scope.task = {
+	$scope.task = {
         done: false
     };
- 
+	 
     $scope.createTask = function () {
         console.log($scope.task);
         $http.post(document.location.pathname + 'rest/tasks', $scope.task).success(function (data) {

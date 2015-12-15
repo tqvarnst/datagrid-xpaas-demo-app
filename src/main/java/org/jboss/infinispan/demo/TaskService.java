@@ -1,6 +1,7 @@
 package org.jboss.infinispan.demo;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -42,6 +43,26 @@ public class TaskService {
 		Query query = qf.from(Task.class).having("user").eq(user).toBuilder().build();
 		
 		List<Task> results = query.list();
+		Collections.sort(results);
+		return results;
+	}
+	
+	/**
+	 * This method filters task based on the input
+	 * @param input - string to filter on
+	 * @return
+	 * 
+	 */
+	public Collection<Task> filter(String input) {
+		QueryFactory qf = Search.getQueryFactory(cache);
+		Query query = qf.from(Task.class)
+					.having("user").eq(user)
+				.and()
+					.having("title").like(String.format("%%%s%%", input))
+				.toBuilder().build();
+		
+		List<Task> results = query.list();
+		Collections.sort(results);
 		return results;
 	}
 
