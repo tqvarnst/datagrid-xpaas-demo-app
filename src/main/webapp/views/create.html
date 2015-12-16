@@ -1,3 +1,9 @@
+<div class="alert alert-danger" role="alert" ng-repeat="alert in alerts">
+  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+  <span class="sr-only">Error:</span>
+  <span ng-bind-html="alert.message"/>
+</div>
+
 <form class="form-horizontal" role="form" ng-submit="createTask()">
     <div class="form-group">
         <label for="title" class="col-sm-2 control-label">Title</label>

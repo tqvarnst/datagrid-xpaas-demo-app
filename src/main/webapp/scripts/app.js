@@ -18,13 +18,16 @@ app.config(function ($routeProvider) {
 });
  
 app.controller('ListCtrl', function ($scope, $http) {
-	$scope.isFocusCreateInput = false;
-    $http.get(document.location.pathname + 'rest/tasks').success(function (data) {
+    $scope.alerts = new Array();
+	$http.get(document.location.pathname + 'rest/tasks').success(function (data) {
         $scope.tasks = data;
     }).error(function (data, status) {
-        console.log('Error ' + data);
+    	var alert = new Object();
+    	alert.message = "Failed to connect to Backend DataStore!";
+    	$scope.alerts.push(alert);
+    	console.log('Error ' + data);
     });
- 
+	
     $scope.taskStatusChanged = function (task) {
         console.log(task);
         if(task.done)
@@ -34,7 +37,10 @@ app.controller('ListCtrl', function ($scope, $http) {
         $http.put(document.location.pathname + 'rest/tasks/' + task.id, task).success(function (data) {
             console.log('status changed');
         }).error(function (data, status) {
-            console.log('Error ' + data);
+        	var alert = new Object();
+        	alert.message = "Failed to connect to Backend DataStore!";
+        	$scope.alerts.push(alert);
+        	console.log('Error ' + data);
         });
     };
     
@@ -43,7 +49,10 @@ app.controller('ListCtrl', function ($scope, $http) {
         $http.delete(document.location.pathname + 'rest/tasks/' + task.id).success(function (data) {
         	$scope.tasks = data;
         }).error(function (data, status) {
-            console.log('Error ' + data);
+        	var alert = new Object();
+        	alert.message = "Failed to connect to Backend DataStore!";
+        	$scope.alerts.push(alert);
+        	console.log('Error ' + data);
         });
     };
     
@@ -52,7 +61,10 @@ app.controller('ListCtrl', function ($scope, $http) {
     	$http.get(document.location.pathname + 'rest/tasks/generate/20').success(function (data) {
             $scope.tasks = data;
         }).error(function (data, status) {
-            console.log('Error ' + data);
+        	var alert = new Object();
+        	alert.message = "Failed to connect to Backend DataStore!";
+        	$scope.alerts.push(alert);
+        	console.log('Error ' + data);
         });
     };
     $scope.filter = function() {
@@ -61,13 +73,19 @@ app.controller('ListCtrl', function ($scope, $http) {
 	    	$http.get(document.location.pathname + 'rest/tasks/filter/' + $scope.filter.value).success(function (data) {
 	            $scope.tasks = data;
 	        }).error(function (data, status) {
-	            console.log('Error ' + data);
+	        	var alert = new Object();
+	        	alert.message = "Failed to connect to Backend DataStore!";
+	        	$scope.alerts.push(alert);
+	        	console.log('Error ' + data);
 	        });
     	} else {
     		$http.get('/mytodo/rest/tasks').success(function (data) {
     	        $scope.tasks = data;
     	    }).error(function (data, status) {
-    	        console.log('Error ' + data);
+    	    	var alert = new Object();
+    	    	alert.message = "Failed to connect to Backend DataStore!";
+    	    	$scope.alerts.push(alert);
+    	    	console.log('Error ' + data);
     	    });
     	}
 	};
@@ -83,7 +101,10 @@ app.controller('CreateCtrl', function ($scope, $http, $location) {
         $http.post(document.location.pathname + 'rest/tasks', $scope.task).success(function (data) {
             $location.path('/');
         }).error(function (data, status) {
-            console.log('Error ' + data);
+        	var alert = new Object();
+        	alert.message = "Failed to connect to Backend DataStore!";
+        	$scope.alerts.push(alert);
+        	console.log('Error ' + data);
         });
     };
       

@@ -26,6 +26,10 @@ import org.jboss.infinispan.demo.model.Task;
  */
 public class Config {
 
+	private static final String ENV_VAR_JDG_SERVICE_NAME = "JDG_SERVICE_NAME";
+	private static final String ENV_VAR_SUFFIX_HOTROD_SERVICE_PORT = "_HOTROD_SERVICE_PORT";
+	private static final String ENV_VAR_SUFFIX_HOTROD_SERVICE_HOST = "_HOTROD_SERVICE_HOST";
+
 	private static final String CACHE_NAME = "default";
 	private static final String PROTOBUF_DEFINITION_RESOURCE = "/todo/task.proto";
 	
@@ -57,11 +61,11 @@ public class Config {
 	}
 	
 	private static String getHotRodHostFromEnvironment() throws DataGridConfigurationException {
-		String hotrodServiceName = System.getenv("JDG_SERVICE_NAME");
+		String hotrodServiceName = System.getenv(ENV_VAR_JDG_SERVICE_NAME);
 		if(hotrodServiceName == null) {
 			throw new DataGridConfigurationException("Failed to get JDG Service Name from environment variables. please make sure that you set this value before starting the container");
 		}
-		String hotRodHost=System.getenv(hotrodServiceName.toUpperCase() + "_HOTROD_SERVICE_HOST");
+		String hotRodHost=System.getenv(hotrodServiceName.toUpperCase() + ENV_VAR_SUFFIX_HOTROD_SERVICE_HOST);
 		if(hotRodHost == null) {
 			throw new DataGridConfigurationException(String.format("Failed to get hostname/ip address for service %s",hotrodServiceName));
 		}
@@ -69,11 +73,11 @@ public class Config {
 	}
 	
 	private static int getHotRodPortFromEnvironment() throws DataGridConfigurationException {
-		String hotrodServiceName = System.getenv("JDG_SERVICE_NAME");
+		String hotrodServiceName = System.getenv(ENV_VAR_JDG_SERVICE_NAME);
 		if(hotrodServiceName == null) {
 			throw new DataGridConfigurationException("Failed to get JDG Service Name from environment variables. please make sure that you set this value before starting the container");
 		}
-		String hotRodPort=System.getenv(hotrodServiceName.toUpperCase() + "_HOTROD_SERVICE_PORT");
+		String hotRodPort=System.getenv(hotrodServiceName.toUpperCase() + ENV_VAR_SUFFIX_HOTROD_SERVICE_PORT);
 		if(hotRodPort == null) {
 			throw new DataGridConfigurationException(String.format("Failed to get Hot Rod Port for service %s",hotrodServiceName));
 		}

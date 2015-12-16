@@ -1,3 +1,11 @@
+<div class="alert alert-danger" role="alert" ng-repeat="alert in alerts">
+  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+  <span class="sr-only">Error:</span>
+  <span ng-bind-html="alert.message"/>
+</div>
+
+
+
 <h2>All Todos</h2>
 
 <div class="pull-left">
