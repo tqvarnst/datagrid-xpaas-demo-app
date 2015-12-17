@@ -79,7 +79,7 @@ app.controller('ListCtrl', function ($scope, $http) {
 	        	console.log('Error ' + data);
 	        });
     	} else {
-    		$http.get('/mytodo/rest/tasks').success(function (data) {
+    		$http.get(document.location.pathname + '/rest/tasks').success(function (data) {
     	        $scope.tasks = data;
     	    }).error(function (data, status) {
     	    	var alert = new Object();
