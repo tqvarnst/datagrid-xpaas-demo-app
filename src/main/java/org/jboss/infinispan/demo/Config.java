@@ -11,6 +11,7 @@ import javax.enterprise.inject.Produces;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
+import org.infinispan.client.hotrod.configuration.NearCacheMode;
 import org.infinispan.client.hotrod.marshall.ProtoStreamMarshaller;
 import org.infinispan.protostream.FileDescriptorSource;
 import org.infinispan.protostream.SerializationContext;
@@ -53,7 +54,11 @@ public class Config {
 	
 	public RemoteCacheManager getCacheManager() throws DataGridConfigurationException {
 		ConfigurationBuilder builder = new ConfigurationBuilder();
-		builder.addServer()
+		builder
+			.nearCache()
+				.mode(NearCacheMode.LAZY)
+				.maxEntries(500)
+			.addServer()
 			.host(getHotRodHostFromEnvironment())
 			.port(getHotRodPortFromEnvironment())
 			.marshaller(new ProtoStreamMarshaller());
